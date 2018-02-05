@@ -325,9 +325,22 @@ Ext.extend(MODx.grid.multiTVgrid{/literal}{$tv->id}{literal},MODx.grid.LocalGrid
 	}    	
 	,migx_remove: function() {
         var _this=this;
-		Ext.Msg.confirm(_('warning') || '','[[%migx.remove_confirm]]' || '',function(e) {
-            if (e == 'yes') {
-				
+	/* begin robin edit for more info about what user is removing from grid */
+	var robsels = _this.getSelectionModel().getSelections();
+        
+	if (robsels.length <= 0) return false;
+        for (var i=0;i<robsels.length;i++) {
+            var lid = robsels[i].id;
+            var rowIndex = _this.getStore().findBy(function(record){if(record.id == lid){return true;}});
+        }
+
+        var rec = _this.getStore().getAt(rowIndex);
+        var warningtext = '[[%migx.remove_confirm]] ' + rec.get('title');
+        
+	Ext.Msg.confirm(_('warning') || '',warningtext || '',function(e) {
+            if (e == 'yes') {			    
+	 /* end robin edit */
+	
         var sels = _this.getSelectionModel().getSelections();
         if (sels.length <= 0) return false;
         for (var i=0;i<sels.length;i++) {
